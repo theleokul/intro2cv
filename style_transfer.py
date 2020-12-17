@@ -16,6 +16,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import skimage as ski
 import skimage.exposure as ski_exposure
+import skimage.io as ski_io
 
 DIR_PATH = Path(__file__).parent
 sys.path.append(str(DIR_PATH))
@@ -44,20 +45,23 @@ model = vgg.VGG().to(device).eval()
 def apply_style_on_painting(painting, style):
     # if isinstance(painting, np.ndarray):
     # painting = ski_exposure.rescale_intensity(painting, out_range=(0., 1.))
-    # painting = ski.img_as_ubyte(painting)
-    plt.imsave('test.png', painting)
-    painting, painting_orig_shape = utils.load_img('test.png', transform, device, True)
+    painting = ski.img_as_ubyte(painting)
+
+    # import ipdb; ipdb.set_trace()
+
+    ski_io.imsave('test_painting.png', painting)
+    painting, painting_orig_shape = utils.load_img('test_painting.png', transform, device, True)
     # painting = Image.fromarray(painting)
 
     # if isinstance(style, np.ndarray):
     # style = ski_exposure.rescale_intensity(style, out_range=(0., 1.))
-    # style = ski.img_as_ubyte(style)
-    plt.imsave('test.png', style)
-    style = utils.load_img('test.png', transform, device)
+    style = ski.img_as_ubyte(style)
+    ski_io.imsave('test_style.png', style)
+    style = utils.load_img('test_style.png', transform, device)
     # style = Image.fromarray(style)
 
-    print(painting)
-    print(style)
+    # print(painting)
+    # print(style)
 
     # painting, painting_orig_shape = utils.load_img(painting, transform, device, True)
     # style = utils.load_img(style, transform, device)
