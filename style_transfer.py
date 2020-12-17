@@ -83,15 +83,15 @@ def apply_style_on_painting(painting, style):
 
             batch_size, c, h, w = gen_feature.shape
             orig_loss += torch.mean((gen_feature - orig_feature) ** 2)
-            print('orig_loss: ', orig_loss)
+            # print('orig_loss: ', orig_loss)
 
             gen_gram = gen_feature.view(c, h * w).mm(gen_feature.view(c, h * w).t())
             style_gram = style_feature.view(c, h * w).mm(style_feature.view(c, h * w).t())
             style_loss += torch.mean((gen_gram - style_gram) ** 2)
-            print('style_loss: ', style_loss)
+            # print('style_loss: ', style_loss)
 
         total_loss = alpha * orig_loss + beta * style_loss
-        print('total_loss: ', total_loss)
+        # print('total_loss: ', total_loss)
 
         optimizer.zero_grad()
         total_loss.backward()
