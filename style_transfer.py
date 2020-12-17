@@ -42,19 +42,19 @@ model = vgg.VGG().to(device).eval()
 
 
 def apply_style_on_painting(painting, style):
-    if isinstance(painting, np.ndarray):
-        painting = ski_exposure.rescale_intensity(painting, out_range=(0., 1.))
-        painting = ski.img_as_ubyte(painting)
-        plt.imsave('test.png', painting)
-        painting, painting_orig_shape = utils.load_img('test.png', transform, device, True)
-        # painting = Image.fromarray(painting)
+    # if isinstance(painting, np.ndarray):
+    # painting = ski_exposure.rescale_intensity(painting, out_range=(0., 1.))
+    # painting = ski.img_as_ubyte(painting)
+    plt.imsave('test.png', painting)
+    painting, painting_orig_shape = utils.load_img('test.png', transform, device, True)
+    # painting = Image.fromarray(painting)
 
-    if isinstance(style, np.ndarray):
-        style = ski_exposure.rescale_intensity(style, out_range=(0., 1.))
-        style = ski.img_as_ubyte(style)
-        plt.imsave('test.png', style)
-        style = utils.load_img('test.png', transform, device)
-        # style = Image.fromarray(style)
+    # if isinstance(style, np.ndarray):
+    # style = ski_exposure.rescale_intensity(style, out_range=(0., 1.))
+    # style = ski.img_as_ubyte(style)
+    plt.imsave('test.png', style)
+    style = utils.load_img('test.png', transform, device)
+    # style = Image.fromarray(style)
 
     print(painting)
     print(style)
