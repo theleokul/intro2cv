@@ -45,18 +45,22 @@ def apply_style_on_painting(painting, style):
     if isinstance(painting, np.ndarray):
         painting = ski_exposure.rescale_intensity(painting, out_range=(0., 1.))
         painting = ski.img_as_ubyte(painting)
-        painting = Image.fromarray(painting)
+        plt.imsave('test.png', painting)
+        painting, painting_orig_shape = utils.load_img('test.png', transform, device, True)
+        # painting = Image.fromarray(painting)
 
     if isinstance(style, np.ndarray):
         style = ski_exposure.rescale_intensity(style, out_range=(0., 1.))
         style = ski.img_as_ubyte(style)
-        style = Image.fromarray(style)
+        plt.imsave('test.png', style)
+        style = utils.load_img('test.png', transform, device)
+        # style = Image.fromarray(style)
 
     print(painting)
     print(style)
 
-    painting, painting_orig_shape = utils.load_img(painting, transform, device, True)
-    style = utils.load_img(style, transform, device)
+    # painting, painting_orig_shape = utils.load_img(painting, transform, device, True)
+    # style = utils.load_img(style, transform, device)
     gen_painting = painting.clone().requires_grad_(True)
     
     optimizer = optim.Adam([gen_painting], lr=learning_rate)
@@ -75,19 +79,22 @@ def apply_style_on_painting(painting, style):
 
             batch_size, c, h, w = gen_feature.shape
             orig_loss += torch.mean((gen_feature - orig_feature) ** 2)
+            print('orig_loss: ', orig_loss)
 
             gen_gram = gen_feature.view(c, h * w).mm(gen_feature.view(c, h * w).t())
             style_gram = style_feature.view(c, h * w).mm(style_feature.view(c, h * w).t())
             style_loss += torch.mean((gen_gram - style_gram) ** 2)
+            print('style_loss: ', style_loss)
 
         total_loss = alpha * orig_loss + beta * style_loss
+        print('total_loss: ', total_loss)
 
         optimizer.zero_grad()
         total_loss.backward()
         optimizer.step()
 
         if step % log_freq == 0:
-            gen_painting_numpy = gen_painting.cpu().detach().numpy()[0]
+            gen_painting_numpy = gen_painting.clone().cpu().detach().numpy()[0]
             gen_painting_numpy = np.moveaxis(gen_painting_numpy, 0, -1)
             gen_painting_numpy = cv.resize(gen_painting_numpy, painting_orig_shape)
             gen_painting_numpy = ski_exposure.rescale_intensity(gen_painting_numpy, out_range=(0., 1.))
