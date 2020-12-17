@@ -52,6 +52,9 @@ def apply_style_on_painting(painting, style):
         style = ski.img_as_ubyte(style)
         style = Image.fromarray(style)
 
+    print(painting)
+    print(style)
+
     painting, painting_orig_shape = utils.load_img(painting, transform, device, True)
     style = utils.load_img(style, transform, device)
     gen_painting = painting.clone().requires_grad_(True)
