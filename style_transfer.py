@@ -43,28 +43,14 @@ model = vgg.VGG().to(device).eval()
 
 
 def apply_style_on_painting(painting, style):
-    # if isinstance(painting, np.ndarray):
-    # painting = ski_exposure.rescale_intensity(painting, out_range=(0., 1.))
     painting = ski.img_as_ubyte(painting)
-
-    # import ipdb; ipdb.set_trace()
-
     ski_io.imsave('test_painting.png', painting)
     painting, painting_orig_shape = utils.load_img('test_painting.png', transform, device, True)
-    # painting = Image.fromarray(painting)
 
-    # if isinstance(style, np.ndarray):
-    # style = ski_exposure.rescale_intensity(style, out_range=(0., 1.))
     style = ski.img_as_ubyte(style)
     ski_io.imsave('test_style.png', style)
     style = utils.load_img('test_style.png', transform, device)
-    # style = Image.fromarray(style)
 
-    # print(painting)
-    # print(style)
-
-    # painting, painting_orig_shape = utils.load_img(painting, transform, device, True)
-    # style = utils.load_img(style, transform, device)
     gen_painting = painting.clone().requires_grad_(True)
     
     optimizer = optim.Adam([gen_painting], lr=learning_rate)
@@ -83,15 +69,12 @@ def apply_style_on_painting(painting, style):
 
             batch_size, c, h, w = gen_feature.shape
             orig_loss += torch.mean((gen_feature - orig_feature) ** 2)
-            # print('orig_loss: ', orig_loss)
 
             gen_gram = gen_feature.view(c, h * w).mm(gen_feature.view(c, h * w).t())
             style_gram = style_feature.view(c, h * w).mm(style_feature.view(c, h * w).t())
             style_loss += torch.mean((gen_gram - style_gram) ** 2)
-            # print('style_loss: ', style_loss)
 
         total_loss = alpha * orig_loss + beta * style_loss
-        # print('total_loss: ', total_loss)
 
         optimizer.zero_grad()
         total_loss.backward()

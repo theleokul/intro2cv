@@ -105,11 +105,6 @@ def extract_painting(implt):
     else:
         res=ids[0]
 
-    # ids=np.array(ids)
-    # flag=1   #this flag is used to point that only one painting detected,
-    # if(len(ids)==1):  #it is unset if more than one painting were detected so it needs filering
-    #     flag=0
-    # sud_count=0
     out= np.zeros((gray.shape[0],gray.shape[1]))
     # for cnt_id in ids:
     perimeter = cv.arcLength(contours[res], True)
@@ -119,33 +114,9 @@ def extract_painting(implt):
     perimeter = cv.arcLength(contours[res], True)
     points=app
     warp= _four_point_transform(implt, points)
-    # if(abs(warp.shape[0]-warp.shape[1]) >400) & flag:    #param can be adjusted
-    #     continue
     warped=warp.copy()
     h=warped.shape[0]
     w=warped.shape[1]
     warped = cv.transpose(warped)
 
     return warped, points
-
-
-
-
-# if __name__ == "__main__":
-#     for i in range(20):
-#         img_path = f'dataset/orig/trainw{i}.jpg'
-#         try:
-#             orig_img = cv.imread(img_path)
-#             orig_img = cv.cvtColor(orig_img, cv.COLOR_BGR2RGB)
-#             ext_painting, pts = extract_painting(orig_img.copy())
-
-#             # TODO: Change style of a painting
-
-#             restored_img = inject_back(ext_painting.copy(), pts, orig_img.copy())
-#             print(img_path)
-#         except:
-#             continue
-#         plt.imsave('dataset/extracted/' + Path(img_path).stem + '.jpg', img)
-#     # img_path = f'dataset/orig/trainw3.jpg'
-#     # img = extract_painting(img_path)
-#     # plt.imsave('dataset/extracted/' + Path(img_path).stem + '.jpg', img)
