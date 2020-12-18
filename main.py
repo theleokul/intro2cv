@@ -41,12 +41,12 @@ def extract_painting_apply_style(img_path: str, style_path: str):
     style = cv.imread(style_path)
     style = cv.cvtColor(style, cv.COLOR_BGR2RGB)
 
-    orig_painting, orig_painting_pts = pe.extract_painting(orig_scene.copy())
-    # orig_painting = orig_scene.copy()
+    # orig_painting, orig_painting_pts = pe.extract_painting(orig_scene.copy())
+    orig_painting = orig_scene.copy()
 
     for step, loss, gen_painting in st.apply_style_on_painting(orig_painting, style):
-        gen_scene = pe.inject_back(gen_painting.copy(), orig_painting_pts, orig_scene)
-        # gen_scene = gen_painting.copy()
+        # gen_scene = pe.inject_back(gen_painting.copy(), orig_painting_pts, orig_scene)
+        gen_scene = gen_painting.copy()
         yield step, loss, gen_painting, gen_scene
 
 
